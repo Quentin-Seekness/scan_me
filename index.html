@@ -1,69 +1,90 @@
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    <style>
 
-        html, body {
-            margin: 0;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            /* background-color: #000; Fond noir pour effet photo */
-        }
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  <style>
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* background-color: #000; Fond noir pour effet photo */
+    }
 
-        #custom-overlay.hidden {
-          display: none;
-        }
+    #custom-overlay.hidden {
+      display: none;
+    }
 
-        #custom-overlay {
-        width: 300px;
-        height: 300px;
-        border: 10px solid white; /* Bord blanc */
-        border-radius: 50%; /* Cercle parfait */
-        box-shadow: 0 0 30px rgba(255, 255, 255, 0.5); /* Lueur blanche */
-        /* background: radial-gradient(circle at center, #222 0%, #000 70%); */
-        position: relative;
-        /* position: absolute;
+    #custom-overlay {
+      width: 300px;
+      height: 300px;
+      border: 10px solid white;
+      /* Bord blanc */
+      border-radius: 50%;
+      /* Cercle parfait */
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+      /* Lueur blanche */
+      /* background: radial-gradient(circle at center, #222 0%, #000 70%); */
+      position: relative;
+      /* position: absolute;
         margin: auto; */
-        /* margin-top: 20%; */
-        }
+      /* margin-top: 20%; */
+    }
 
-        #custom-overlay::after {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 80px;
-        height: 80px;
-        border: 5px solid #fff;
-        border-radius: 50%;
-        background: transparent;
-        }
-    </style>
-  </head>
-  <body>
-    <div id="custom-overlay" class="hidden">
-    </div>
-    <a-scene mindar-image="imageTargetSrc: assets/targets.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+    #custom-overlay::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      border: 5px solid #fff;
+      border-radius: 50%;
+      background: transparent;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="custom-overlay" class="hidden">
+  </div>
+  <a-scene mindar-image="imageTargetSrc: assets/visit_cards.mind; filterMinCF:0.1; filterBeta: 0.001;"
+    color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false">
     <!-- <a-scene mindar-image="uiScanning: #custom-overlay; imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false"> -->
-      <a-assets>
-        <!-- <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" /> -->
-        <!-- <a-asset-item id="monsteraModel" src="assets/potted_monstera_plant.glb"></a-asset-item> -->
-        <a-asset-item id="pothosModel" src="assets/pothos_potted_plant.glb"></a-asset-item>
-      </a-assets>
+    <a-assets>
+      <!-- <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" /> -->
+      <!-- <a-asset-item id="monsteraModel" src="assets/potted_monstera_plant.glb"></a-asset-item> -->
+      <a-asset-item id="pothosModel" src="assets/pothos_potted_plant.glb"></a-asset-item>
+    </a-assets>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-      <a-entity mindar-image-target="targetIndex: 0">
-        <!-- <a-plane src="#card" position="0 0 0" height="0.552" width="1" rotation="0 0 0"></a-plane> -->
-        <!-- <a-gltf-model rotation="90 0 0 " position="0 0 0.1" scale="0.5 0.5 0.5" src="#monsteraModel" animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate"> -->
-      </a-entity>
-      <a-entity mindar-image-target="targetIndex: 1">
-        <a-gltf-model rotation="90 -90 0 " position="0 0 0.1" scale="3 3 3" src="#pothosModel" animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
-      </a-entity>
-    </a-scene>
-  </body>
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    <!-- Verso -->
+    <a-entity mindar-image-target="targetIndex: 0">
+      <!-- <a-plane src="#card" position="0 0 0" height="0.552" width="1" rotation="0 0 0"></a-plane> -->
+      <!-- <a-gltf-model rotation="90 0 0 " position="0 0 0.1" scale="0.5 0.5 0.5" src="#monsteraModel" animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate"> -->
+    </a-entity>
+    <!-- Orange Face -->
+    <a-entity mindar-image-target="targetIndex: 1">
+      <a-gltf-model rotation="-90 0 180 " position="0 0 0.1" scale="1.5 1.5 1.5" src="#pothosModel"
+        animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
+    </a-entity>
+    <!-- Pink Face -->
+    <a-entity mindar-image-target="targetIndex: 2">
+      <a-gltf-model rotation="-90 0 180 " position="0 0 0.1" scale="1.5 1.5 1.5" src="#pothosModel"
+        animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
+    </a-entity>
+    <!-- White Face -->
+    <a-entity mindar-image-target="targetIndex: 3">
+      <a-gltf-model rotation="-90 0 180 " position="0 0 0.1" scale="1.5 1.5 1.5" src="#pothosModel"
+        animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
+    </a-entity>
+  </a-scene>
+</body>
+
 </html>
