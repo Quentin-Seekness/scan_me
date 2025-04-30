@@ -1,0 +1,41 @@
+html, body {
+    margin: 0;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color: #000; Fond noir pour effet photo */
+}
+
+.hidden {
+    display: none;
+}
+
+#custom-overlay {
+    width: 300px;
+    height: 300px;
+    border: 10px solid white;
+    /* Bord blanc */
+    border-radius: 50%;
+    /* Cercle parfait */
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+    /* Lueur blanche */
+    /* background: radial-gradient(circle at center, #222 0%, #000 70%); */
+    position: relative;
+    /* position: absolute;
+    margin: auto; */
+    /* margin-top: 20%; */
+}
+
+#custom-overlay::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    border: 5px solid #fff;
+    border-radius: 50%;
+    background: transparent;
+}

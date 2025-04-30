@@ -2,73 +2,58 @@
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Link Libraries -->
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-  <style>
-    html,
-    body {
-      margin: 0;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      /* background-color: #000; Fond noir pour effet photo */
-    }
-
-    #custom-overlay.hidden {
-      display: none;
-    }
-
-    #custom-overlay {
-      width: 300px;
-      height: 300px;
-      border: 10px solid white;
-      /* Bord blanc */
-      border-radius: 50%;
-      /* Cercle parfait */
-      box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
-      /* Lueur blanche */
-      /* background: radial-gradient(circle at center, #222 0%, #000 70%); */
-      position: relative;
-      /* position: absolute;
-        margin: auto; */
-      /* margin-top: 20%; */
-    }
-
-    #custom-overlay::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80px;
-      height: 80px;
-      border: 5px solid #fff;
-      border-radius: 50%;
-      background: transparent;
-    }
-  </style>
+  <!-- Link CSS -->
+  <link href="css/slider.css" rel="stylesheet" />
+  <link href="css/custom-overlay.css" rel="stylesheet" />
+  <!-- Link custom JS -->
+  <script src="js/interactive.js" type="text/javascript"></script>
+  <script src="js/slider.js" type="text/javascript"></script>
 </head>
 
 <body>
+  <!-- Custom css tests -->
   <div id="custom-overlay" class="hidden">
   </div>
+
+  <!-- Interactive elements tests -->
+  <div id="interactive-buttons" style="position: absolute; z-index: 1000" class="hidden">
+    <button id="example-start-button">Start</button>
+    <button id="example-pause-button">Pause</button>
+    <button id="example-pause-keep-video-button">Pause (keep video)</button>
+    <button id="example-unpause-button">UnPause</button>
+    <button id="example-stop-button">Stop</button>
+  </div>
+
+  <!-- Interactive image Slider Test -->
+  <div id="slider" class="carousel-container hidden" style="position: absolute; z-index: 1000">
+    <button class="arrow arrow-left">&#8592;</button>
+    <img id="carouselImage" class="carousel-image" src="" alt="Image Carousel">
+    <button class="arrow arrow-right">&#8594;</button>
+  </div>
+
   <a-scene mindar-image="imageTargetSrc: assets/visit_cards.mind; filterMinCF:0.1; filterBeta: 0.001;"
     color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false">
     <!-- <a-scene mindar-image="uiScanning: #custom-overlay; imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false"> -->
     <a-assets>
-      <!-- <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" /> -->
-      <!-- <a-asset-item id="monsteraModel" src="assets/potted_monstera_plant.glb"></a-asset-item> -->
-      <a-asset-item id="pothosModel" src="assets/pothos_potted_plant.glb"></a-asset-item>
+      <a-asset-item id="ankModel" src="assets/models/ank_logo_orange.glb"></a-asset-item>
+      <a-asset-item id="pothosModel" src="assets/models/pothos_potted_plant.glb"></a-asset-item>
     </a-assets>
 
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-    <!-- Verso -->
-    <a-entity mindar-image-target="targetIndex: 0">
-      <!-- <a-plane src="#card" position="0 0 0" height="0.552" width="1" rotation="0 0 0"></a-plane> -->
-      <!-- <a-gltf-model rotation="90 0 0 " position="0 0 0.1" scale="0.5 0.5 0.5" src="#monsteraModel" animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate"> -->
+    <!-- <a-camera position="0 0 0" look-controls="enabled: false"></a-camera> -->
+    <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="near: 10; far: 10000; objects: .clickable"></a-camera>
+    <!-- Verso (test with buttons hide/show) -->
+    <a-entity id="example-target" mindar-image-target="targetIndex: 0">
+      <a-plane id="example-plane" class="clickable" color="blue" opaciy="0.5" position="0 0 0" height="0.552" width="1" rotation="0 0 0"></a-plane>
     </a-entity>
+    <!-- Verso -->
+    <!-- <a-entity mindar-image-target="targetIndex: 0">
+      <a-gltf-model rotation="0 0 0 " position="0 0 0.1" scale="0.5 0.5 0.5" src="#ankModel"
+        animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
+    </a-entity> -->
     <!-- Orange Face -->
     <a-entity mindar-image-target="targetIndex: 1">
       <a-gltf-model rotation="-90 0 180 " position="0 0 0.1" scale="1.5 1.5 1.5" src="#pothosModel"
