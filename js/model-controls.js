@@ -120,9 +120,9 @@ AFRAME.registerComponent('animated-model', {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-	const SCALE_STEP = 1.25;
-	const SCALE_MIN = 0.2;
-	const SCALE_MAX = 5;
+	const SCALE_STEP = 1;
+	const SCALE_MIN = 0.5;
+	const SCALE_MAX = 3;
 	let scale = 1;
 
 	const models = () => Array.from(document.querySelectorAll('[animated-model]'));
