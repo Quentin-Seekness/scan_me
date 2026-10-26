@@ -20,14 +20,24 @@ AFRAME.registerComponent('animated-model', {
 		const model = this.el.getObject3D('mesh');
 		if (!model) return;
 
-		// Center the model and fit it to the target
+		// Center the model and fit it to the target.
+		// The box is computed with the model detached: MindAR anchors hold a zero matrix
+		// until a target is found, which would turn the box into NaN and hide the model.
+		const parent = model.parent;
+		parent.remove(model);
+		model.updateMatrixWorld(true);
 		const box = new THREE.Box3().setFromObject(model);
+		parent.add(model);
 		const size = box.getSize(new THREE.Vector3());
 		const center = box.getCenter(new THREE.Vector3());
-		const maxDim = Math.max(size.x, size.y, size.z) || 1;
-		const factor = this.data.size / maxDim;
-		model.scale.multiplyScalar(factor);
-		model.position.sub(center.multiplyScalar(factor));
+		const maxDim = Math.max(size.x, size.y, size.z);
+		if (isFinite(maxDim) && maxDim > 0) {
+			const factor = this.data.size / maxDim;
+			model.scale.multiplyScalar(factor);
+			model.position.sub(center.multiplyScalar(factor));
+		} else {
+			console.warn('animated-model: unable to compute model size, keeping original scale');
+		}
 
 		const clips = model.animations || [];
 		if (!clips.length) {
