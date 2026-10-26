@@ -3,14 +3,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AR</title>
   <!-- Link Libraries -->
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   <!-- Link CSS -->
   <link href="css/ar-interface.css" rel="stylesheet" />
   <link href="css/model-controls.css" rel="stylesheet" />
-  <!-- Link custom JS (must be loaded before the scene to register the components) -->
+  <!-- Link custom JS (components must be registered before the scene is built) -->
   <script src="js/model-controls.js" type="text/javascript"></script>
+  <!-- Builds the scene from experiences/<exp>.json (index.html?exp=visit-cards) -->
+  <script src="js/experience-loader.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -23,8 +26,14 @@
       <span class="corner bottom-right"></span>
       <div class="scan-line"></div>
     </div>
-    <div class="scan-hint">Visez la carte</div>
+    <div class="scan-hint">Visez la cible</div>
   </div>
+
+  <!-- Shown while the model of a found target is downloading -->
+  <div id="model-loading" class="hidden">Chargement du modèle…</div>
+
+  <!-- Shown when the experience config cannot be loaded -->
+  <div id="experience-error" class="hidden"></div>
 
   <!-- 3D model controls -->
   <!-- Shown only when a target is found and its model is displayed -->
@@ -43,36 +52,7 @@
     </div>
   </div>
 
-  <!-- Tracking smoothing (One Euro filter): lower filterMinCF = less jitter when still,
-       higher filterBeta = less lag when moving. MindAR defaults are 0.001 / 1000. -->
-  <a-scene mindar-image="imageTargetSrc: assets/visit_cards.mind; uiScanning: #scan-overlay; maxTrack: 1; filterMinCF: 0.0001; filterBeta: 0.001;"
-    color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: false">
-    <a-assets>
-      <!-- Change src to display another 3D model -->
-      <a-asset-item id="arModel" src="assets/models/animated_low_poly_fish.glb"></a-asset-item>
-    </a-assets>
-
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-    <a-light type="ambient" intensity="1"></a-light>
-    <a-light type="directional" position="0 1 1" intensity="2"></a-light>
-
-    <!-- One anchor per image of visit_cards.mind : any detected card shows the model.
-         rotation="90 0 0" stands the model (Y-up) on the card, position z is its height above the card,
-         heading turns it around its up axis. -->
-    <a-entity mindar-image-target="targetIndex: 0">
-      <a-gltf-model src="#arModel" position="0 0 0.1" rotation="90 0 0" animated-model="heading: 90"></a-gltf-model>
-    </a-entity>
-    <a-entity mindar-image-target="targetIndex: 1">
-      <a-gltf-model src="#arModel" position="0 0 0.1" rotation="90 0 0" animated-model="heading: 90"></a-gltf-model>
-    </a-entity>
-    <a-entity mindar-image-target="targetIndex: 2">
-      <a-gltf-model src="#arModel" position="0 0 0.1" rotation="90 0 0" animated-model="heading: 90"></a-gltf-model>
-    </a-entity>
-    <a-entity mindar-image-target="targetIndex: 3">
-      <a-gltf-model src="#arModel" position="0 0 0.1" rotation="90 0 0" animated-model="heading: 90"></a-gltf-model>
-    </a-entity>
-  </a-scene>
+  <!-- The a-scene is built by js/experience-loader.js -->
 </body>
 
 </html>

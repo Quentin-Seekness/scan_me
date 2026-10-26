@@ -167,18 +167,17 @@ document.addEventListener("DOMContentLoaded", function() {
 		animationControls.classList.toggle('hidden', !animated);
 	}
 
-	document.querySelectorAll('[mindar-image-target]').forEach((target) => {
-		target.addEventListener('targetFound', () => {
-			foundTargets.add(target);
-			updateControls();
-		});
-		target.addEventListener('targetLost', () => {
-			foundTargets.delete(target);
-			updateControls();
-		});
+	// Listened on the document (A-Frame events bubble): the scene may be built after this script runs
+	document.addEventListener('targetFound', (event) => {
+		foundTargets.add(event.target);
+		updateControls();
+	});
+	document.addEventListener('targetLost', (event) => {
+		foundTargets.delete(event.target);
+		updateControls();
 	});
 	// A model may finish loading after its target has been found
-	models().forEach((el) => el.addEventListener('model-loaded', updateControls));
+	document.addEventListener('model-loaded', updateControls);
 
 	// Drag (mouse or finger) rotates the displayed models around their center:
 	// horizontal moves turn around the screen vertical axis, vertical moves around the screen horizontal axis.

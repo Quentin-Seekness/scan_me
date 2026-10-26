@@ -4,6 +4,34 @@
 	display: none !important;
 }
 
+/* Model download indicator and experience loading error */
+#model-loading,
+#experience-error {
+	position: fixed;
+	left: 50%;
+	top: 16px;
+	z-index: 1000;
+	transform: translateX(-50%);
+	padding: 8px 16px;
+	border-radius: 20px;
+	background: rgba(0, 0, 0, 0.55);
+	color: #ffffff;
+	font-family: sans-serif;
+	font-size: 15px;
+	pointer-events: none;
+}
+
+#experience-error {
+	top: 50%;
+	transform: translate(-50%, -50%);
+	background: #b00020;
+}
+
+#model-loading.hidden,
+#experience-error.hidden {
+	display: none;
+}
+
 /*
  * Custom scanning overlay (mindar-image uiScanning: #scan-overlay).
  * MindAR toggles the "hidden" class: shown while no target is found.
