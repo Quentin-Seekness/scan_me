@@ -1,3 +1,8 @@
+/* Finger drags rotate the 3D model instead of scrolling or zooming the page */
+body {
+	touch-action: none;
+}
+
 #model-controls {
 	position: fixed;
 	left: 0;
