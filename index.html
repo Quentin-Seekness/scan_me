@@ -41,18 +41,20 @@
     <a-light type="ambient" intensity="1"></a-light>
     <a-light type="directional" position="0 1 1" intensity="2"></a-light>
 
-    <!-- One anchor per image of visit_cards.mind : any detected card shows the model -->
+    <!-- One anchor per image of visit_cards.mind : any detected card shows the model.
+         rotation="90 0 0" stands the model (Y-up) on the card, position z is its height above the card,
+         heading turns it around its up axis. -->
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-gltf-model src="#arModel" position="0 0 0.1" animated-model></a-gltf-model>
+      <a-gltf-model src="#arModel" position="0 0 0.1" rotation="90 0 0" animated-model="heading: 90"></a-gltf-model>
     </a-entity>
     <a-entity mindar-image-target="targetIndex: 1">
-      <a-gltf-model src="#arModel" position="0 0 0.1" animated-model></a-gltf-model>
+      <a-gltf-model src="#arModel" position="0 0 0.1" rotation="90 0 0" animated-model="heading: 90"></a-gltf-model>
     </a-entity>
     <a-entity mindar-image-target="targetIndex: 2">
-      <a-gltf-model src="#arModel" position="0 0 0.1" animated-model></a-gltf-model>
+      <a-gltf-model src="#arModel" position="0 0 0.1" rotation="90 0 0" animated-model="heading: 90"></a-gltf-model>
     </a-entity>
     <a-entity mindar-image-target="targetIndex: 3">
-      <a-gltf-model src="#arModel" position="0 0 0.1" animated-model></a-gltf-model>
+      <a-gltf-model src="#arModel" position="0 0 0.1" rotation="90 0 0" animated-model="heading: 90"></a-gltf-model>
     </a-entity>
   </a-scene>
 </body>

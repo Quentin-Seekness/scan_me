@@ -5,6 +5,7 @@
 AFRAME.registerComponent('animated-model', {
 	schema: {
 		size: {type: 'number', default: 1},	// largest dimension, in target width units
+		heading: {type: 'number', default: 0},	// rotation around the model up axis, in degrees
 		autoplay: {type: 'boolean', default: true}
 	},
 
@@ -25,9 +26,10 @@ AFRAME.registerComponent('animated-model', {
 		const model = this.el.getObject3D('mesh');
 		if (!model) return;
 
-		// Center the model and fit it to the target.
+		// Center the model, put its base at the entity origin and fit it to the target.
 		// The box is computed with the model detached: MindAR anchors hold a zero matrix
 		// until a target is found, which would turn the box into NaN and hide the model.
+		model.rotation.y = THREE.MathUtils.degToRad(this.data.heading);
 		const parent = model.parent;
 		parent.remove(model);
 		model.updateMatrixWorld(true);
@@ -39,7 +41,7 @@ AFRAME.registerComponent('animated-model', {
 		if (isFinite(maxDim) && maxDim > 0) {
 			const factor = this.data.size / maxDim;
 			model.scale.multiplyScalar(factor);
-			model.position.sub(center.multiplyScalar(factor));
+			model.position.sub(new THREE.Vector3(center.x, box.min.y, center.z).multiplyScalar(factor));
 		} else {
 			console.warn('animated-model: unable to compute model size, keeping original scale');
 		}
