@@ -120,7 +120,7 @@ AFRAME.registerComponent('animated-model', {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-	const SCALE_STEP = 1;
+	const SCALE_STEP = 0.1;	// added or removed at each click (0.1 = 10%)
 	const SCALE_MIN = 0.5;
 	const SCALE_MAX = 3;
 	let scale = 1;
@@ -148,7 +148,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
 	function setScale(value) {
-		scale = Math.min(SCALE_MAX, Math.max(SCALE_MIN, value));
+		// Rounded to avoid floating point drift (0.1 + 0.2 = 0.30000000000000004)
+		scale = Math.round(Math.min(SCALE_MAX, Math.max(SCALE_MIN, value)) * 100) / 100;
 		models().forEach((el) => el.object3D.scale.set(scale, scale, scale));
 		scaleLabel.textContent = Math.round(scale * 100) + '%';
 	}
@@ -181,8 +182,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	// Drag (mouse or finger) rotates the displayed models around their center:
 	// horizontal moves turn around the screen vertical axis, vertical moves around the screen horizontal axis.
+	// Pinch (two fingers) or mouse wheel zooms, by steps of SCALE_STEP within SCALE_MIN / SCALE_MAX.
 	const ROTATE_SPEED = 0.01;	// radians per pixel
-	let drag = null;
+	const WHEEL_STEP_DELTA = 100;	// wheel delta (pixels) for one SCALE_STEP
+	const pointers = new Map();	// pointerId => {x, y}
+	let pinch = null;
+	let wheelDelta = 0;
 
 	function rotateDisplayed(dx, dy) {
 		const THREE = AFRAME.THREE;
@@ -198,25 +203,61 @@ document.addEventListener("DOMContentLoaded", function() {
 		});
 	}
 
+	// Snap to the closest SCALE_STEP so gestures move by the same increments as the buttons
+	function setSnappedScale(value) {
+		setScale(Math.round(value / SCALE_STEP) * SCALE_STEP);
+	}
+
+	function pointersDistance() {
+		const [a, b] = Array.from(pointers.values());
+		return Math.hypot(a.x - b.x, a.y - b.y);
+	}
+
 	document.addEventListener('pointerdown', (event) => {
-		if (drag || event.target.closest('#model-controls')) return;
-		drag = {id: event.pointerId, x: event.clientX, y: event.clientY};
+		if (event.target.closest('#model-controls')) return;
+		pointers.set(event.pointerId, {x: event.clientX, y: event.clientY});
+		if (pointers.size === 2) {
+			pinch = {distance: pointersDistance(), scale: scale};
+		}
 	});
 	document.addEventListener('pointermove', (event) => {
-		if (!drag || event.pointerId !== drag.id) return;
-		rotateDisplayed(event.clientX - drag.x, event.clientY - drag.y);
-		drag.x = event.clientX;
-		drag.y = event.clientY;
+		const pointer = pointers.get(event.pointerId);
+		if (!pointer) return;
+		const dx = event.clientX - pointer.x;
+		const dy = event.clientY - pointer.y;
+		pointer.x = event.clientX;
+		pointer.y = event.clientY;
+		if (pinch) {
+			if (displayedModels().length && pinch.distance > 0) {
+				setSnappedScale(pinch.scale * pointersDistance() / pinch.distance);
+			}
+		} else {
+			rotateDisplayed(dx, dy);
+		}
 	});
 	['pointerup', 'pointercancel'].forEach((type) => document.addEventListener(type, (event) => {
-		if (drag && event.pointerId === drag.id) drag = null;
+		pointers.delete(event.pointerId);
+		// Pinch ends as soon as one finger is lifted, the remaining one rotates again
+		if (pointers.size < 2) pinch = null;
 	}));
+
+	document.addEventListener('wheel', (event) => {
+		if (!displayedModels().length) return;
+		event.preventDefault();
+		// deltaMode 1 = lines (Firefox), converted to pixels
+		wheelDelta += event.deltaMode === 1 ? event.deltaY * 33 : event.deltaY;
+		const steps = Math.trunc(wheelDelta / WHEEL_STEP_DELTA);
+		if (steps) {
+			wheelDelta -= steps * WHEEL_STEP_DELTA;
+			setScale(scale - steps * SCALE_STEP);	// wheel up (negative delta) zooms in
+		}
+	}, {passive: false});
 
 	playButton.addEventListener('click', () => callAll('playAnimation'));
 	pauseButton.addEventListener('click', () => callAll('pauseAnimation'));
 	restartButton.addEventListener('click', () => callAll('restartAnimation'));
-	smallerButton.addEventListener('click', () => setScale(scale / SCALE_STEP));
-	biggerButton.addEventListener('click', () => setScale(scale * SCALE_STEP));
+	smallerButton.addEventListener('click', () => setScale(scale - SCALE_STEP));
+	biggerButton.addEventListener('click', () => setScale(scale + SCALE_STEP));
 	resetRotationButton.addEventListener('click', () => models().forEach((el) => {
 		const component = el.components['animated-model'];
 		if (component) component.resetRotation();
