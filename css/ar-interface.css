@@ -1,0 +1,121 @@
+/* A-Frame fullscreen / VR button (bottom right) */
+.a-enter-vr,
+.a-enter-ar {
+	display: none !important;
+}
+
+/*
+ * Custom scanning overlay (mindar-image uiScanning: #scan-overlay).
+ * MindAR toggles the "hidden" class: shown while no target is found.
+ * Customize it with the variables below.
+ */
+#scan-overlay {
+	--scan-color: #ffffff;			/* frame and line color */
+	--scan-width: min(80vw, 380px);	/* frame width */
+	--scan-ratio: 1.75;				/* frame width / height (business card ~ 85x55mm) */
+	--scan-corner-size: 32px;		/* length of the corner brackets */
+	--scan-corner-thickness: 4px;
+	--scan-corner-radius: 12px;
+	--scan-duration: 2s;			/* one line sweep, top to bottom */
+
+	position: fixed;
+	inset: 0;
+	z-index: 900;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 20px;
+	pointer-events: none;
+}
+
+#scan-overlay.hidden {
+	display: none;
+}
+
+#scan-overlay .scan-frame {
+	position: relative;
+	width: var(--scan-width);
+	aspect-ratio: var(--scan-ratio);
+	overflow: hidden;
+	border-radius: var(--scan-corner-radius);
+}
+
+/* Corner brackets: one element per corner, two borders each */
+#scan-overlay .corner {
+	position: absolute;
+	width: var(--scan-corner-size);
+	height: var(--scan-corner-size);
+	border: 0 solid var(--scan-color);
+}
+
+#scan-overlay .corner.top-left {
+	top: 0;
+	left: 0;
+	border-top-width: var(--scan-corner-thickness);
+	border-left-width: var(--scan-corner-thickness);
+	border-top-left-radius: var(--scan-corner-radius);
+}
+
+#scan-overlay .corner.top-right {
+	top: 0;
+	right: 0;
+	border-top-width: var(--scan-corner-thickness);
+	border-right-width: var(--scan-corner-thickness);
+	border-top-right-radius: var(--scan-corner-radius);
+}
+
+#scan-overlay .corner.bottom-left {
+	bottom: 0;
+	left: 0;
+	border-bottom-width: var(--scan-corner-thickness);
+	border-left-width: var(--scan-corner-thickness);
+	border-bottom-left-radius: var(--scan-corner-radius);
+}
+
+#scan-overlay .corner.bottom-right {
+	right: 0;
+	bottom: 0;
+	border-bottom-width: var(--scan-corner-thickness);
+	border-right-width: var(--scan-corner-thickness);
+	border-bottom-right-radius: var(--scan-corner-radius);
+}
+
+/* Sweeping line with a fading trail above it */
+#scan-overlay .scan-line {
+	position: absolute;
+	left: 6%;
+	right: 6%;
+	top: 0;
+	height: 2px;
+	background: var(--scan-color);
+	box-shadow: 0 0 12px 2px var(--scan-color);
+	animation: scan-sweep var(--scan-duration) ease-in-out infinite;
+}
+
+#scan-overlay .scan-line::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 2px;
+	height: 40px;
+	background: linear-gradient(to top, var(--scan-color), transparent);
+	opacity: 0.25;
+}
+
+@keyframes scan-sweep {
+	0% { top: 4%; opacity: 0; }
+	15% { opacity: 1; }
+	85% { opacity: 1; }
+	100% { top: 96%; opacity: 0; }
+}
+
+#scan-overlay .scan-hint {
+	padding: 8px 16px;
+	border-radius: 20px;
+	background: rgba(0, 0, 0, 0.55);
+	color: var(--scan-color);
+	font-family: sans-serif;
+	font-size: 15px;
+}
