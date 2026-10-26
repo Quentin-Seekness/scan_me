@@ -30,7 +30,9 @@
     </div>
   </div>
 
-  <a-scene mindar-image="imageTargetSrc: assets/visit_cards.mind; maxTrack: 1; filterMinCF:0.1; filterBeta: 0.001;"
+  <!-- Tracking smoothing (One Euro filter): lower filterMinCF = less jitter when still,
+       higher filterBeta = less lag when moving. MindAR defaults are 0.001 / 1000. -->
+  <a-scene mindar-image="imageTargetSrc: assets/visit_cards.mind; maxTrack: 1; filterMinCF: 0.0001; filterBeta: 0.001;"
     color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false">
     <a-assets>
