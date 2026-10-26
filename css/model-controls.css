@@ -11,6 +11,11 @@
 	pointer-events: none;
 }
 
+#model-controls.hidden,
+#model-controls .hidden {
+	display: none;
+}
+
 #model-controls .group {
 	display: flex;
 	align-items: center;

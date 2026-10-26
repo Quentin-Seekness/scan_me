@@ -17,6 +17,11 @@ AFRAME.registerComponent('animated-model', {
 
 	onModelLoaded: function () {
 		const THREE = AFRAME.THREE;
+		// Forget the animations of a previously loaded model (src change)
+		if (this.mixer) this.mixer.stopAllAction();
+		this.mixer = null;
+		this.actions = [];
+
 		const model = this.el.getObject3D('mesh');
 		if (!model) return;
 
@@ -85,6 +90,9 @@ document.addEventListener("DOMContentLoaded", function() {
 	let scale = 1;
 
 	const models = () => Array.from(document.querySelectorAll('[animated-model]'));
+	const foundTargets = new Set();
+	const controls = document.querySelector('#model-controls');
+	const animationControls = document.querySelector('#model-animation-controls');
 	const playButton = document.querySelector('#model-play-button');
 	const pauseButton = document.querySelector('#model-pause-button');
 	const restartButton = document.querySelector('#model-restart-button');
@@ -107,6 +115,30 @@ document.addEventListener("DOMContentLoaded", function() {
 		models().forEach((el) => el.object3D.scale.set(scale, scale, scale));
 		scaleLabel.textContent = Math.round(scale * 100) + '%';
 	}
+
+	// Show the controls only for displayed models, and animation controls only if one of them is animated
+	function updateControls() {
+		const displayed = models().filter((el) => foundTargets.has(el.parentEl) && el.getObject3D('mesh'));
+		const animated = displayed.some((el) => {
+			const component = el.components['animated-model'];
+			return component && component.actions.length > 0;
+		});
+		controls.classList.toggle('hidden', displayed.length === 0);
+		animationControls.classList.toggle('hidden', !animated);
+	}
+
+	document.querySelectorAll('[mindar-image-target]').forEach((target) => {
+		target.addEventListener('targetFound', () => {
+			foundTargets.add(target);
+			updateControls();
+		});
+		target.addEventListener('targetLost', () => {
+			foundTargets.delete(target);
+			updateControls();
+		});
+	});
+	// A model may finish loading after its target has been found
+	models().forEach((el) => el.addEventListener('model-loaded', updateControls));
 
 	playButton.addEventListener('click', () => callAll('playAnimation'));
 	pauseButton.addEventListener('click', () => callAll('pauseAnimation'));

@@ -14,8 +14,10 @@
 
 <body>
   <!-- 3D model controls -->
-  <div id="model-controls">
-    <div class="group">
+  <!-- Shown only when a target is found and its model is displayed -->
+  <div id="model-controls" class="hidden">
+    <!-- Shown only when the displayed model has animations -->
+    <div id="model-animation-controls" class="group hidden">
       <button id="model-play-button">▶ Démarrer</button>
       <button id="model-pause-button">⏸ Arrêter</button>
       <button id="model-restart-button">↺ Redémarrer</button>
