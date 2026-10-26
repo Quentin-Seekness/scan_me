@@ -1,93 +1,57 @@
 <html>
 
 <head>
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <!-- Link Libraries -->
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   <!-- Link CSS -->
-  <link href="css/slider.css" rel="stylesheet" />
-  <link href="css/custom-overlay.css" rel="stylesheet" />
-  <!-- Link custom JS -->
-  <script src="js/interactive.js" type="text/javascript"></script>
-  <script src="js/slider.js" type="text/javascript"></script>
+  <link href="css/model-controls.css" rel="stylesheet" />
+  <!-- Link custom JS (must be loaded before the scene to register the components) -->
+  <script src="js/model-controls.js" type="text/javascript"></script>
 </head>
 
 <body>
-  <!-- Custom css tests -->
-  <div id="custom-overlay" class="hidden">
+  <!-- 3D model controls -->
+  <div id="model-controls">
+    <div class="group">
+      <button id="model-play-button">▶ Démarrer</button>
+      <button id="model-pause-button">⏸ Arrêter</button>
+      <button id="model-restart-button">↺ Redémarrer</button>
+    </div>
+    <div class="group">
+      <button id="model-smaller-button">－ Réduire</button>
+      <span id="model-scale-label">100%</span>
+      <button id="model-bigger-button">＋ Agrandir</button>
+    </div>
   </div>
 
-  <!-- Interactive elements tests -->
-  <div id="interactive-buttons" style="position: absolute; z-index: 1000" class="hidden">
-    <button id="example-start-button">Start</button>
-    <button id="example-pause-button">Pause</button>
-    <button id="example-pause-keep-video-button">Pause (keep video)</button>
-    <button id="example-unpause-button">UnPause</button>
-    <button id="example-stop-button">Stop</button>
-  </div>
-
-  <!-- Interactive image Slider Test -->
-  <div id="slider" class="carousel-container hidden" style="position: absolute; z-index: 1000">
-    <button class="arrow arrow-left">&#8592;</button>
-    <img id="carouselImage" class="carousel-image" src="" alt="Image Carousel">
-    <button class="arrow arrow-right">&#8594;</button>
-  </div>
-
-  <a-scene mindar-image="imageTargetSrc: assets/visit_cards.mind; filterMinCF:0.1; filterBeta: 0.001;"
+  <a-scene mindar-image="imageTargetSrc: assets/visit_cards.mind; maxTrack: 1; filterMinCF:0.1; filterBeta: 0.001;"
     color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false">
-    <!-- <a-scene mindar-image="uiScanning: #custom-overlay; imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false"> -->
     <a-assets>
-      <a-asset-item id="ankModel" src="assets/models/ank_logo_orange.glb"></a-asset-item>
-      <a-asset-item id="pothosModel" src="assets/models/pothos_potted_plant.glb"></a-asset-item>
+      <!-- Change src to display another 3D model -->
+      <a-asset-item id="arModel" src="assets/models/animated_low_poly_fish.glb"></a-asset-item>
     </a-assets>
 
-    <!-- <a-camera position="0 0 0" look-controls="enabled: false"></a-camera> -->
-    <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="near: 10; far: 10000; objects: .clickable"></a-camera>
-    <!-- Verso (test with buttons hide/show) -->
-    <a-entity id="example-target" mindar-image-target="targetIndex: 0">
-      <a-plane id="example-plane" class="clickable" color="blue" opaciy="0.5" position="0 0 0" height="0.552" width="1" rotation="0 0 0"></a-plane>
-    </a-entity>
-    <!-- Verso -->
-    <!-- <a-entity mindar-image-target="targetIndex: 0">
-      <a-gltf-model rotation="0 0 0 " position="0 0 0.1" scale="0.5 0.5 0.5" src="#ankModel"
-        animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
-    </a-entity> -->
-    <!-- Orange Face -->
-    <a-entity mindar-image-target="targetIndex: 1">
-      <a-gltf-model rotation="-90 0 180 " position="0 0 0.1" scale="1.5 1.5 1.5" src="#pothosModel"
-        animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
-    </a-entity>
-    <!-- Pink Face -->
-    <a-entity mindar-image-target="targetIndex: 2">
-      <a-gltf-model rotation="-90 0 180 " position="0 0 0.1" scale="1.5 1.5 1.5" src="#pothosModel"
-        animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
-    </a-entity>
-    <!-- White Face -->
-    <a-entity mindar-image-target="targetIndex: 3">
-      <a-gltf-model rotation="-90 0 180 " position="0 0 0.1" scale="1.5 1.5 1.5" src="#pothosModel"
-        animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
-    </a-entity>
-  </a-scene>
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    <a-light type="ambient" intensity="1"></a-light>
+    <a-light type="directional" position="0 1 1" intensity="2"></a-light>
 
-  <a-scene mindar-image="imageTargetSrc: assets/puzzle.mind; filterMinCF:0.1; filterBeta: 0.001;"
-    color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: false">
-    <!-- <a-scene mindar-image="uiScanning: #custom-overlay; imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false"> -->
-    <a-assets>
-      <a-asset-item id="pothosModel" src="assets/models/pothos_potted_plant.glb"></a-asset-item>
-    </a-assets>
-
-    <!-- <a-camera position="0 0 0" look-controls="enabled: false"></a-camera> -->
-    <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="near: 10; far: 10000; objects: .clickable"></a-camera>
-
-    <!-- Puzzle face -->
+    <!-- One anchor per image of visit_cards.mind : any detected card shows the model -->
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-gltf-model rotation="-90 0 180 " position="0 0 0.1" scale="1.5 1.5 1.5" src="#pothosModel"
-        animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
+      <a-gltf-model src="#arModel" position="0 0 0.1" animated-model></a-gltf-model>
     </a-entity>
-
+    <a-entity mindar-image-target="targetIndex: 1">
+      <a-gltf-model src="#arModel" position="0 0 0.1" animated-model></a-gltf-model>
+    </a-entity>
+    <a-entity mindar-image-target="targetIndex: 2">
+      <a-gltf-model src="#arModel" position="0 0 0.1" animated-model></a-gltf-model>
+    </a-entity>
+    <a-entity mindar-image-target="targetIndex: 3">
+      <a-gltf-model src="#arModel" position="0 0 0.1" animated-model></a-gltf-model>
+    </a-entity>
   </a-scene>
 </body>
 
